@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import LembreteItem from './components/LembreteItem'
+import LembreteInput from './components/LembreteInput';
 
 export default function App() {
-  const[lembrete, setLembrete] = useState ('')
-
-  const capturarLembrete = (textoDigitado) => {
-    setLembrete(textoDigitado)
-  }
+  
 
   const [lembretes, setLembretes] = useState([]);
 
   const [contadorLembretes, setContadorLembretes] = useState(0);
 
-  const adicionarLembrete = () => {
+  const adicionarLembrete = (lembrete) => {
     //spread
     setLembretes (lembretes => {
       console.log (lembretes);
@@ -22,45 +20,29 @@ export default function App() {
     
     //console.log (lembrete);
   }
+
+  const removerLembrete = (keyASerRemovida) => {
+    setLembretes(lembretes =>{
+      return lembretes.filter(lembrete => lembrete.key !== keyASerRemovida);
+    })
+  }
   
 
   return (
     <View style={styles.telaPrincipalView}>
-      <View style={styles.lembreteView}>
-        {/*Usuário irá inserir lembretes aqui*/}
-        <TextInput 
-          placeholder="Lembrar..."
-          style={styles.lembreteTextInput}
-          onChangeText={capturarLembrete}
-          value={lembrete}
-        />
-        <Button
-          title="+"
-          onPress={adicionarLembrete}
-        />
-      </View>
+      <LembreteInput onAdicionarLembrete={adicionarLembrete}/>
       <FlatList
         data={lembretes}
         renderItem={
           lembrete => (
-            <View style={styles.itemNaLista}>
-              <Text>{lembrete.item.value}</Text>
-            </View>
+            <LembreteItem 
+              lembrete={lembrete.item.value}
+              chave={lembrete.item.key}
+              onDelete={removerLembrete}
+            />
           )          
         }
       />
-      {/*<ScrollView>
-        {Aqui será exibida a lista de lembretes}
-        {
-          lembretes.map((lembrete) => 
-            <View 
-              key={lembrete}
-              style={styles.itemNaLista}>
-                <Text>{lembrete}</Text>
-            </View>
-          )         
-        }
-      </ScrollView>*/}
     </View>
    
   );
@@ -69,26 +51,5 @@ export default function App() {
 const styles = StyleSheet.create({
   telaPrincipalView: {
     padding: 50
-  },
-  lembreteView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6
-  },
-  lembreteTextInput: {
-    width: '80%',
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-    padding: 2,
-    marginBottom: 4
-  },
-  itemNaLista: {
-    padding: 12,
-    backgroundColor: '#CCC',
-    borderColor: "black",
-    borderWidth: 1,
-    marginBottom: 8,
-    borderRadius: 8
   }
 });
